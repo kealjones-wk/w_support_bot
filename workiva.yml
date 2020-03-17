@@ -1,0 +1,4 @@
+version: 1
+services:
+  w-support-bot:
+    ingress: true

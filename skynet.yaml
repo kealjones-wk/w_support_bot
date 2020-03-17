@@ -1,0 +1,26 @@
+# Testing with Skynet 2.0 - https://wiki.atl.workiva.net/display/SKYNET/Testing+with+Skynet+2.0?src=search
+name: w_support_bot_initial_skynet
+
+image: drydock.workiva.net/workiva/skynet-images:service_platform_skynet-latest
+
+timeout: short
+
+size: medium
+
+requires:
+  Workiva/w_support_bot: docker
+
+run:
+   on-pull-request: true
+   on-promotion: true
+   when-branch-name-is:
+     - .*_debug
+     - ^refs/tags/.+
+     - master
+
+scripts:
+  - docker run -d -p 8080:8080 --network=${SKYNET_NETWORK} --network-alias=w_support_bot -e PORT=8080 ${SKYNET_APPLICATION_W_SUPPORT_BOT}
+  - sleep 10
+  - wget http://w_support_bot:8080/_wk/ready
+  - wget http://w_support_bot:8080/_wk/alive
+  - wget http://w_support_bot:8080/_wk/status
